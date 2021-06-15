@@ -30,13 +30,19 @@ import com.facetec.sdk.FaceTecSessionActivity;
 import com.facetec.sdk.FaceTecSessionResult;
 import com.facetec.sdk.FaceTecSessionStatus;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import ZoomProcessors.LivenessCheckProcessor;
+import ZoomProcessors.NetworkingHelpers;
 import ZoomProcessors.ZoomGlobalState;
 import io.tradle.reactimagestore.ImageStoreModule;
+import okhttp3.Call;
+import okhttp3.Callback;
 
 public class RNReactNativeZoomSdkModule extends ReactContextBaseJavaModule {
 
@@ -47,37 +53,37 @@ public class RNReactNativeZoomSdkModule extends ReactContextBaseJavaModule {
   private boolean returnBase64 = false;
   private String licenseKey;
 
-  private final ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
-    @Override
-    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-      super.onActivityResult(activity, requestCode, resultCode, data);
-      if (requestCode != FaceTecSDK.REQUEST_CODE_SESSION) return;
-      if (verificationPromise == null) return;
-
-      // Save results
-      FaceTecSessionResult result = FaceTecSessionActivity.getSessionResultFromActivityResult(data);
-
-      WritableMap resultObj;
-      try {
-        resultObj = convertZoomVerificationResult(result);
-      } catch (IOException i) {
-        resultObj = Arguments.createMap();
-        resultObj.putBoolean("success", false);
-        resultObj.putString("status", "ImageStoreError");
-        resultObj.putString("error", i.getMessage());
-      }
-
-      verificationPromise.resolve(resultObj);
-      verificationPromise = null;
-    }
-  };
-
 
   public RNReactNativeZoomSdkModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
     this.verificationPromise = null;
     this.initialized = false;
+    // Save results
+    ActivityEventListener mActivityEventListener = new BaseActivityEventListener() {
+      @Override
+      public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(activity, requestCode, resultCode, data);
+        if (requestCode != FaceTecSDK.REQUEST_CODE_SESSION) return;
+        if (verificationPromise == null) return;
+
+        // Save results
+        FaceTecSessionResult result = FaceTecSessionActivity.getSessionResultFromActivityResult(data);
+
+        WritableMap resultObj;
+        try {
+          resultObj = convertZoomVerificationResult(result);
+        } catch (IOException i) {
+          resultObj = Arguments.createMap();
+          resultObj.putBoolean("success", false);
+          resultObj.putString("status", "ImageStoreError");
+          resultObj.putString("error", i.getMessage());
+        }
+
+        verificationPromise.resolve(resultObj);
+        verificationPromise = null;
+      }
+    };
     reactContext.addActivityEventListener(mActivityEventListener);
   }
 
@@ -172,12 +178,55 @@ public class RNReactNativeZoomSdkModule extends ReactContextBaseJavaModule {
       promise.reject(new RuntimeException("NotInitialized"));
       return;
     }
-
     verificationPromise = promise;
     returnBase64 = opts.getBoolean("returnBase64");
-    Activity activity = getCurrentActivity();
-    new LivenessCheckProcessor(activity, this.licenseKey);
+    final Activity activity = getCurrentActivity();
+    getSessionToken(new SessionTokenCallback() {
+      @Override
+      public void onSessionTokenReceived(String sessionToken) {
+        new LivenessCheckProcessor(activity, licenseKey, sessionToken);
+      }
+    });
   }
+
+  interface SessionTokenCallback {
+    void onSessionTokenReceived(String sessionToken);
+  }
+
+  public void getSessionToken(final SessionTokenCallback sessionTokenCallback) {
+    // Do the network call and handle result
+    okhttp3.Request request = new okhttp3.Request.Builder()
+            .header("X-Device-Key", licenseKey)
+            .header("User-Agent", FaceTecSDK.createFaceTecAPIUserAgentString(""))
+            .url(ZoomGlobalState.BaseURL + "/session-token")
+            .get()
+            .build();
+
+    NetworkingHelpers.getApiClient().newCall(request).enqueue(new Callback() {
+      @Override
+      public void onFailure(Call call, IOException e) {
+        e.printStackTrace();
+        Log.d("FaceTecSDKSampleApp", "Exception raised while attempting HTTPS call.");
+      }
+
+      @Override
+      public void onResponse(Call call, okhttp3.Response response) throws IOException {
+        String responseString = response.body().string();
+        response.body().close();
+        try {
+          JSONObject responseJSON = new JSONObject(responseString);
+          if (responseJSON.has("sessionToken")) {
+            sessionTokenCallback.onSessionTokenReceived(responseJSON.getString("sessionToken"));
+          } else {
+          }
+        } catch (JSONException e) {
+          e.printStackTrace();
+          Log.d("FaceTecSDKSampleApp", "Exception raised while attempting to parse JSON result.");
+        }
+      }
+    });
+  }
+
 
 //  @ReactMethod
 //  public void handleVerificationSuccessResult(ZoomVerificationResult successResult) {

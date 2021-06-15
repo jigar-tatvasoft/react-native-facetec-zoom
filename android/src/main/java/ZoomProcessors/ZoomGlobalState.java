@@ -14,7 +14,7 @@ public class ZoomGlobalState {
   // "https://api.zoomauth.com/api/v2/biometrics" for FaceTec Managed Testing API.
   // "http://localhost:8080" if running ZoOm Server SDK (Dockerized) locally.
   // Otherwise, your webservice URL.
-  public static String ZoomServerBaseURL = "https://api.zoomauth.com/api/v2/biometrics";
+  public static String BaseURL = "https://api.facetec.com/api/v3.1/biometrics";
 
   // The customer-controlled public key used during encryption of FaceMap data.
   // Please see https://dev.zoomlogin.com/zoomsdk/#/licensing-and-encryption-keys for more information.
