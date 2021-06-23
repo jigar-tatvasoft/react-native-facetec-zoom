@@ -9,7 +9,12 @@ import com.facetec.sdk.FaceTecSDK;
 public class ThemeHelpers {
 
     public static void setAppTheme(String theme) {
-        if(theme.equals("ZoOm Theme")) {
+        if(theme.equals("FaceTec Theme")) {
+            // using default customizations -- do nothing
+        }
+        else if(theme.equals("Config Wizard Theme")) {
+            ZoomGlobalState.currentCustomization = ZoomGlobalState.retrieveConfigurationWizardCustomization();
+        }else   if(theme.equals("ZoOm Theme")) {
             ZoomGlobalState.currentCustomization = new FaceTecCustomization();
         }
         else if(theme.equals("Well-Rounded")) {
