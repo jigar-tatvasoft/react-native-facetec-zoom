@@ -162,7 +162,7 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
   @objc func initialize(_ options: Dictionary<String, Any>,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-    self.licenseKey = options["deviceKeyIdentifier"] as! String
+    self.licenseKey = options["licenseKey"] as! String
 
     let faceMapEncryptionKey = options["facemapEncryptionKey"] as! String
 
