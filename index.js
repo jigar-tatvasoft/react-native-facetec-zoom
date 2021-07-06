@@ -63,6 +63,12 @@ const wrapNative = native => {
     return exec('authenticate', opts)
   }
 
+  const photoIDVerify = (opts) => {
+    if (typeof opts.id !== 'string' || !opts.id) throw new Error('expected string "id"')
+
+    return exec('photoIDVerify', opts)
+  }
+
   return {
     initialize,
     verifyLiveness: exec.bind(null, 'verifyLiveness'),
@@ -71,6 +77,7 @@ const wrapNative = native => {
     enroll,
     authenticate,
     getVersion,
+    photoIDVerify: exec.bind(null, 'photoIDVerify'),
   }
 }
 

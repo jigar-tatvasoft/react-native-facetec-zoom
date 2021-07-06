@@ -73,6 +73,22 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
       }
     }
   }
+  
+  // React Method
+  @objc func photoIDVerify(_ options: Dictionary<String, Any>, // options not used at the moment
+                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    self.resolver = resolve
+    self.rejecter = reject
+    DispatchQueue.main.async {
+      let root = UIApplication.shared.keyWindow!.rootViewController!
+      var optionsWithKey = options
+      optionsWithKey["licenseKey"] = self.licenseKey
+      self.getSessionToken() { sessionToken in
+        let _ = PhotoIDScanProcessor(sessionToken: sessionToken, delegate: self, fromViewController: root, options: optionsWithKey)
+      }
+    }
+  }
 
   // Show the final result and transition back into the main interface.
   func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?) {
