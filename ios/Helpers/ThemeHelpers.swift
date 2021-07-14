@@ -37,7 +37,7 @@ class ThemeHelpers {
             let frameCornerRadius: Int32 = 20
 
             let cancelImage = UIImage(named: "FaceTec_cancel")
-            let cancelButtonLocation: FaceTecCancelButtonLocation = .topLeft
+            let cancelButtonLocation: FaceTecCancelButtonLocation = .disabled
 
             // For image Customization
             let yourAppLogoImage = UIImage(named: "FaceTec_your_app_logo")
