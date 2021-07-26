@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		84AB091D26AE8E0D003B509A /* EnrollmentProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AB091C26AE8E0D003B509A /* EnrollmentProcessor.swift */; };
 		85B6B0F92018C5EA00A70FDA /* ZoomAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B6B0F82018C5EA00A70FDA /* ZoomAuth.swift */; };
 		AE9D6FBE23C165CF00B12F1C /* LivenessCheckProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D6FBD23C165CF00B12F1C /* LivenessCheckProcessor.swift */; };
 		AE9D6FC023C1669C00B12F1C /* ProcesingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9D6FBF23C1669C00B12F1C /* ProcesingDelegate.swift */; };
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNReactNativeZoomSdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNReactNativeZoomSdk.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		84AB091C26AE8E0D003B509A /* EnrollmentProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnrollmentProcessor.swift; sourceTree = "<group>"; };
 		85B6B0F72018C5E900A70FDA /* RNReactNativeZoomSdk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNReactNativeZoomSdk-Bridging-Header.h"; sourceTree = "<group>"; };
 		85B6B0F82018C5EA00A70FDA /* ZoomAuth.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = ZoomAuth.swift; sourceTree = "<group>"; tabWidth = 2; };
 		85B6B0FD2018C6A300A70FDA /* ZoomConfigurationForTestApplication.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = ZoomConfigurationForTestApplication.xcconfig; sourceTree = "<group>"; };
@@ -68,6 +70,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				84AB091C26AE8E0D003B509A /* EnrollmentProcessor.swift */,
 				AEC3CD0A254A15740087A0CB /* AuthenticateProcessor.swift */,
 				AE9D6FBD23C165CF00B12F1C /* LivenessCheckProcessor.swift */,
 				85B6B0F82018C5EA00A70FDA /* ZoomAuth.swift */,
@@ -150,6 +153,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84AB091D26AE8E0D003B509A /* EnrollmentProcessor.swift in Sources */,
 				AEC3CD0B254A15740087A0CB /* AuthenticateProcessor.swift in Sources */,
 				AE9D6FC723C16EA600B12F1C /* NetworkingHelpers.swift in Sources */,
 				AE9D6FC323C16E0A00B12F1C /* ZoomGlobalState.swift in Sources */,
