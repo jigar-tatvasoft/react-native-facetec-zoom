@@ -89,28 +89,93 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
       }
     }
   }
+  
+  
 
+//  // Show the final result and transition back into the main interface.
+//  func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?) {
+//    let statusCode = facetecSessionResult?.status.rawValue ?? -1
+//    var resultJson:[String:Any] = [
+//      "success": isSuccess,
+//      "status": statusCode
+//    ]
+//
+//    if (!isSuccess) {
+//      self.sendResult(resultJson)
+//      return
+//    }
+//
+//    resultJson["sessionId"] = facetecSessionResult?.sessionId ?? ""
+//    resultJson["auditTrailCompressedBase64"] = facetecSessionResult?.auditTrailCompressedBase64 ?? []
+//
+//    if self.returnBase64 && facetecSessionResult?.faceScan != nil {
+//      resultJson["facemapBase64"] = facetecSessionResult!.faceScanBase64
+//    }
+//
+//    self.sendResult(resultJson)
+//  }
+  
   // Show the final result and transition back into the main interface.
-  func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?) {
-    let statusCode = facetecSessionResult?.status.rawValue ?? -1
-    var resultJson:[String:Any] = [
-      "success": isSuccess,
-      "status": statusCode
-    ]
+    func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?) {
+      let statusCode = facetecSessionResult?.status.rawValue ?? -1
+      var resultJson:[String:Any] = [
+        "success": isSuccess,
+        "status": statusCode
+      ]
 
-    if (!isSuccess) {
+      if (!isSuccess) {
+        self.sendResult(resultJson)
+        return
+      }
+      var imagePaths = [String]()
+      resultJson["sessionId"] = facetecSessionResult?.sessionId ?? ""
+      
+      if let lowQualityBase64 = facetecSessionResult?.auditTrailCompressedBase64{
+        var index = 0;
+        for item in lowQualityBase64{
+          let imageName = "\(index).png"
+          let path = self.saveImageToDiretory(item, name: imageName)
+          imagePaths.append(path);
+          index = index+1
+        }
+      }
+      resultJson["auditTrailCompressedBase64"] = imagePaths
+
+      if self.returnBase64 && facetecSessionResult?.faceScan != nil {
+        resultJson["faceScanBase64"] = facetecSessionResult!.faceScanBase64
+      }
+
       self.sendResult(resultJson)
-      return
+    }
+    
+    func saveImageToDiretory(_ base64: String, name:String) -> String {
+      let decodedData = NSData(base64Encoded: base64, options: [])
+      if let data = decodedData {
+          let decodedimage = UIImage(data: data as Data)
+          // Obtaining the Location of the Documents Directory
+          let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+
+          // Create URL
+          let url = documents.appendingPathComponent(name)
+
+          // Convert to Data
+          if let data = decodedimage?.pngData() {
+              do {
+                  try data.write(to: url)
+                  return url.absoluteString
+              } catch {
+                return ""
+                  print("Unable to Write Image Data to Disk")
+              }
+          } else {
+            return ""
+          }
+        } else {
+            print("error with decodedData")
+          return ""
+        }
     }
 
-    resultJson["sessionId"] = facetecSessionResult?.sessionId ?? ""
-
-    if self.returnBase64 && facetecSessionResult?.faceScan != nil {
-      resultJson["facemapBase64"] = facetecSessionResult!.faceScanBase64
-    }
-
-    self.sendResult(resultJson)
-  }
   
   // Show the final result and transition back into the main interface.
   func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?, facetecIDScanResult: FaceTecIDScanResult?) {
