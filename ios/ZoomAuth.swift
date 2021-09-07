@@ -90,8 +90,6 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
     }
   }
   
-
-  
   // Show the final result and transition back into the main interface.
     func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?) {
       let statusCode = facetecSessionResult?.status.rawValue ?? -1
@@ -117,6 +115,41 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
         }
       }
       resultJson["auditTrailCompressedBase64"] = imagePaths
+
+      if self.returnBase64 && facetecSessionResult?.faceScan != nil {
+        resultJson["faceScanBase64"] = facetecSessionResult!.faceScanBase64
+      }
+
+      self.sendResult(resultJson)
+    }
+  
+  // Show the final result and transition back into the main interface.
+    func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?, externalDatabaseRefID: String?, xUserAgent: String?) {
+      let statusCode = facetecSessionResult?.status.rawValue ?? -1
+      var resultJson:[String:Any] = [
+        "success": isSuccess,
+        "status": statusCode
+      ]
+
+      if (!isSuccess) {
+        self.sendResult(resultJson)
+        return
+      }
+      var imagePaths = [String]()
+      resultJson["sessionId"] = facetecSessionResult?.sessionId ?? ""
+      
+      if let lowQualityBase64 = facetecSessionResult?.auditTrailCompressedBase64{
+        var index = 0;
+        for item in lowQualityBase64{
+          let imageName = "\(index).png"
+          let path = self.saveImageToDiretory(item, name: imageName)
+          imagePaths.append(path);
+          index = index+1
+        }
+      }
+      resultJson["auditTrailCompressedBase64"] = imagePaths
+      resultJson["externalDatabaseRefID"] = externalDatabaseRefID
+      resultJson["xUserAgent"] = xUserAgent
 
       if self.returnBase64 && facetecSessionResult?.faceScan != nil {
         resultJson["faceScanBase64"] = facetecSessionResult!.faceScanBase64

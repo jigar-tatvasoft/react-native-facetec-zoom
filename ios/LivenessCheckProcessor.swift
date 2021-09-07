@@ -9,6 +9,8 @@ class LivenessCheckProcessor: NSObject, URLSessionDelegate, FaceTecFaceScanProce
     var delegate: ProcessingDelegate
     var latestZoomSessionResult: FaceTecSessionResult?
     var isSuccess: Bool
+    var externalDatabaseRefID : String = "ios_ubuntu_life_app_" + UUID().uuidString
+    var xUserAgent: String = ""
 
     init(sessionToken: String, delegate: ProcessingDelegate, fromVC: UIViewController, options: Dictionary<String, Any>) {
         self.delegate = delegate
@@ -30,6 +32,7 @@ class LivenessCheckProcessor: NSObject, URLSessionDelegate, FaceTecFaceScanProce
     // Required function that handles calling ZoOm Server to get result and decides how to continue.
     func processSessionWhileFaceTecSDKWaits(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) {
         self.latestZoomSessionResult = sessionResult
+        self.xUserAgent = FaceTec.sdk.createFaceTecAPIUserAgentString(sessionResult.sessionId)
         // cancellation, timeout, etc.
         if sessionResult.status != .sessionCompletedSuccessfully {
             faceScanResultCallback.onFaceScanResultCancel();
@@ -65,6 +68,7 @@ class LivenessCheckProcessor: NSObject, URLSessionDelegate, FaceTecFaceScanProce
     
     // The final callback ZoOm SDK calls when done with everything.
     func onFaceTecSDKCompletelyDone() {
-        delegate.onProcessingComplete(isSuccess: isSuccess, facetecSessionResult: latestZoomSessionResult)
+//        delegate.onProcessingComplete(isSuccess: isSuccess, facetecSessionResult: latestZoomSessionResult)
+        delegate.onProcessingComplete(isSuccess: isSuccess, facetecSessionResult: latestZoomSessionResult, externalDatabaseRefID: self.externalDatabaseRefID, xUserAgent: self.xUserAgent)
     }
 }
