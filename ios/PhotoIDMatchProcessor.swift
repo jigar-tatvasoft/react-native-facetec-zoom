@@ -23,7 +23,7 @@ class PhotoIDScanProcessor: NSObject, FaceTecFaceScanProcessorDelegate, FaceTecI
     var idScanResultCallback: FaceTecIDScanResultCallback!
     var options: Dictionary<String, Any>!
     var externalDatabaseRefID : String = "ios_sample_app_" + UUID().uuidString
-
+    var idScanBackImage : [String] = [""]
     init(sessionToken: String, delegate: ProcessingDelegate, fromViewController: UIViewController, options: Dictionary<String, Any>) {
         self.fromViewController = fromViewController
         self.delegate = delegate;
@@ -220,6 +220,7 @@ class PhotoIDScanProcessor: NSObject, FaceTecFaceScanProcessorDelegate, FaceTecI
         }
         if idScanResult.backImagesCompressedBase64?.isEmpty == false {
             parameters["idScanBackImage"] = idScanResult.backImagesCompressedBase64![0]
+            self.idScanBackImage = idScanResult.backImagesCompressedBase64 ?? [""]
         }
         parameters["minMatchLevel"] = minMatchLevel
         parameters["externalDatabaseRefID"] = self.externalDatabaseRefID
@@ -325,7 +326,7 @@ class PhotoIDScanProcessor: NSObject, FaceTecFaceScanProcessorDelegate, FaceTecI
         
         // In your code, you will handle what to do after the Photo ID Scan is successful here.
         // In our example code here, to keep the code in this class simple, we will call a static method on another class to update the Sample App UI.
-        delegate.onProcessingComplete(isSuccess: success, facetecSessionResult: latestZoomSessionResult, facetecIDScanResult: latestIDScanResult);
+        delegate.onProcessingComplete(isSuccess: success, facetecSessionResult: latestZoomSessionResult, facetecIDScanResult: latestIDScanResult, idScanBackImage: self.idScanBackImage);
     }
     
     

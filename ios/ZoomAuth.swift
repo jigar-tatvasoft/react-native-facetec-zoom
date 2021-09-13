@@ -188,7 +188,7 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
 
   
   // Show the final result and transition back into the main interface.
-  func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?, facetecIDScanResult: FaceTecIDScanResult?) {
+  func onProcessingComplete(isSuccess: Bool, facetecSessionResult: FaceTecSessionResult?, facetecIDScanResult: FaceTecIDScanResult?, idScanBackImage:[String]) {
       let statusCodeFaceTec = facetecSessionResult?.status.rawValue ?? -1
       let statusCodeFaceTecID = facetecIDScanResult?.status.rawValue ?? -1
       let statusCode = (statusCodeFaceTec != 0) && (statusCodeFaceTecID != 0)
@@ -238,16 +238,15 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
     resultJson["auditTrailPhotoFrontId"] = frontIdPath
   
     var backIdPath = [String]()
-    if let backIdBase64 = facetecIDScanResult?.backImagesCompressedBase64{
+    if idScanBackImage.isEmpty == false {
       var index = 100;
-      for item in backIdBase64{
+      for item in idScanBackImage{
         let imageName = "\(index).png"
         let path = self.saveImageToDiretory(item, name: imageName)
         backIdPath.append(path);
         index = index+1
       }
     }
-    
     resultJson["auditTrailPhotoBackId"] = backIdPath
 
       if  facetecIDScanResult?.idScan != nil {
