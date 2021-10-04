@@ -18,6 +18,7 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
   var returnBase64: Bool = false
   var initialized = false
   var licenseKey: String!
+  var productionKey: String!
 
   func getRCTBridge() -> RCTBridge
   {
@@ -318,6 +319,7 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
     self.licenseKey = options["licenseKey"] as! String
+    self.productionKey = options["productionKey"] as! String
 
     let faceMapEncryptionKey = options["facemapEncryptionKey"] as! String
 
@@ -331,30 +333,51 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
     // Apply the customization changes
     //FaceTec.sdk.setCustomization(currentCustomization)
     ThemeHelpers.setAppTheme(theme: "custom_theme")
-    FaceTec.sdk.initializeInDevelopmentMode(
-      deviceKeyIdentifier: licenseKey,
-      faceScanEncryptionKey: faceMapEncryptionKey,
-      completion: { (licenseKeyValidated: Bool) -> Void in
-        //
-        // We want to ensure that licenseKey is valid before enabling verification
-        //
-        if licenseKeyValidated {
-          self.initialized = true
-          let message = "licenseKey validated successfully"
-          print(message)
-          resolve([
-            "success": true
-          ])
-        }
-        else {
-          let status = FaceTec.sdk.getStatus().rawValue
-          resolve([
-            "success": false,
-            "status": status
-          ])
-        }
+    FaceTec.sdk.initializeInProductionMode(productionKeyText: productionKey, deviceKeyIdentifier: licenseKey, faceScanEncryptionKey: faceMapEncryptionKey) { (licenseKeyValidated: Bool) in
+      //
+      // We want to ensure that licenseKey is valid before enabling verification
+      //
+      if licenseKeyValidated {
+        self.initialized = true
+        let message = "licenseKey validated successfully"
+        print(message)
+        resolve([
+          "success": true
+        ])
       }
-    )
+      else {
+        let status = FaceTec.sdk.getStatus().rawValue
+        resolve([
+          "success": false,
+          "status": status
+        ])
+      }
+    }
+    
+//    FaceTec.sdk.initializeInDevelopmentMode(
+//      deviceKeyIdentifier: licenseKey,
+//      faceScanEncryptionKey: faceMapEncryptionKey,
+//      completion: { (licenseKeyValidated: Bool) -> Void in
+//        //
+//        // We want to ensure that licenseKey is valid before enabling verification
+//        //
+//        if licenseKeyValidated {
+//          self.initialized = true
+//          let message = "licenseKey validated successfully"
+//          print(message)
+//          resolve([
+//            "success": true
+//          ])
+//        }
+//        else {
+//          let status = FaceTec.sdk.getStatus().rawValue
+//          resolve([
+//            "success": false,
+//            "status": status
+//          ])
+//        }
+//      }
+//    )
   }
 
   func getSessionToken(sessionTokenCallback: @escaping (String) -> ()) {
