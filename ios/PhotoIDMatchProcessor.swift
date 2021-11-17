@@ -107,7 +107,8 @@ class PhotoIDScanProcessor: NSObject, FaceTecFaceScanProcessorDelegate, FaceTecI
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try! JSONSerialization.data(withJSONObject: parameters, options: JSONSerialization.WritingOptions(rawValue: 0))
         request.addValue(self.licenseKey, forHTTPHeaderField: "X-Device-Key")
-        request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString(sessionResult.sessionId), forHTTPHeaderField: "User-Agent")
+        request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString(sessionResult.sessionId), forHTTPHeaderField: "X-User-Agent")
+        request.addValue(ZoomGlobalState.Authorization, forHTTPHeaderField: "Authorization")
         
         let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
         latestNetworkRequest = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
@@ -233,7 +234,8 @@ class PhotoIDScanProcessor: NSObject, FaceTecFaceScanProcessorDelegate, FaceTecI
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try! JSONSerialization.data(withJSONObject: parameters, options: JSONSerialization.WritingOptions(rawValue: 0))
         request.addValue(self.licenseKey, forHTTPHeaderField: "X-Device-Key")
-        request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString((idScanResult.sessionId)!), forHTTPHeaderField: "User-Agent")
+        request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString((idScanResult.sessionId)!), forHTTPHeaderField: "X-User-Agent")
+        request.addValue(ZoomGlobalState.Authorization, forHTTPHeaderField: "Authorization")
         
         let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
         latestNetworkRequest = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in

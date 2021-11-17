@@ -44,6 +44,11 @@ class ThemeHelpers {
             let securityWatermarkImage: FaceTecSecurityWatermarkImage = .faceTecZoom
             
             // Set a default customizatiom
+            ZoomGlobalState.currentCustomization.ocrConfirmationCustomization.mainHeaderTextColor = buttonColorPressed
+            ZoomGlobalState.currentCustomization.ocrConfirmationCustomization.mainHeaderDividerLineColor = buttonColorPressed
+            ZoomGlobalState.currentCustomization.ocrConfirmationCustomization.buttonBackgroundNormalColor = buttonColorPressed
+            ZoomGlobalState.currentCustomization.ocrConfirmationCustomization.buttonBackgroundHighlightColor = buttonColorPressed
+            ZoomGlobalState.currentCustomization.ocrConfirmationCustomization.buttonBackgroundDisabledColor = buttonColorPressed
             // Set Frame Customization
             ZoomGlobalState.currentCustomization.frameCustomization.cornerRadius = frameCornerRadius
             ZoomGlobalState.currentCustomization.frameCustomization.backgroundColor = frameColor

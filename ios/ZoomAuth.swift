@@ -386,7 +386,8 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
       request.httpMethod = "GET"
       // Required parameters to interact with the FaceTec Managed Testing API.
       request.addValue(self.licenseKey, forHTTPHeaderField: "X-Device-Key")
-      request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString(""), forHTTPHeaderField: "User-Agent")
+      request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString(""), forHTTPHeaderField: "X-User-Agent")
+    request.addValue(ZoomGlobalState.Authorization, forHTTPHeaderField: "Authorization")
       
       let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: OperationQueue.main)
       let task = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
