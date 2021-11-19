@@ -75,7 +75,7 @@ class NetworkingHelpers {
         
         // Required parameters to interact with the FaceTec Managed Testing API.
 //        request.addValue(ZoomGlobalState.DeviceLicenseKeyIdentifier, forHTTPHeaderField: "X-Device-License-Key")
-        request.addValue(licenseKey, forHTTPHeaderField: "X-Device-License-Key")
+        request.addValue(licenseKey, forHTTPHeaderField: "X-Device-Key")
         request.addValue(FaceTec.sdk.createFaceTecAPIUserAgentString(sessionId), forHTTPHeaderField: "X-User-Agent")
         request.addValue(ZoomGlobalState.Authorization, forHTTPHeaderField: "Authorization")
         
