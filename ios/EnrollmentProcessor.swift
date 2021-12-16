@@ -16,6 +16,8 @@ class EnrollmentProcessor: NSObject, FaceTecFaceScanProcessorDelegate, URLSessio
     var latestZoomSessionResult: FaceTecSessionResult?
     var faceScanResultCallback: FaceTecFaceScanResultCallback!
     var options: Dictionary<String, Any>!
+    var externalDatabaseRefID : String = "ios_ubuntu_life_app_" + UUID().uuidString
+    var xUserAgent: String = ""
 
     init(sessionToken: String, delegate: ProcessingDelegate, fromVC: UIViewController, options: Dictionary<String, Any>) {
         self.isSuccess = false;
@@ -49,6 +51,7 @@ class EnrollmentProcessor: NSObject, FaceTecFaceScanProcessorDelegate, URLSessio
     func processSessionWhileFaceTecSDKWaits(sessionResult: FaceTecSessionResult, faceScanResultCallback: FaceTecFaceScanResultCallback) {
         
         self.latestZoomSessionResult = sessionResult
+        self.xUserAgent = FaceTec.sdk.createFaceTecAPIUserAgentString(sessionResult.sessionId)
 
         //
         // DEVELOPER NOTE:  A reference to the callback is stored as a class variable so that we can have access to it while performing the Upload and updating progress.
@@ -74,7 +77,7 @@ class EnrollmentProcessor: NSObject, FaceTecFaceScanProcessorDelegate, URLSessio
         parameters["faceScan"] = sessionResult.faceScanBase64
         parameters["auditTrailImage"] = sessionResult.auditTrailCompressedBase64![0]
         parameters["lowQualityAuditTrailImage"] = sessionResult.lowQualityAuditTrailCompressedBase64![0]
-        parameters["externalDatabaseRefID"] = self.options["id"] as! String
+        parameters["externalDatabaseRefID"] = self.externalDatabaseRefID
         
         //
         // Part 5:  Make the Networking Call to Your Servers.  Below is just example code, you are free to customize based on how your own API works.
@@ -163,6 +166,8 @@ class EnrollmentProcessor: NSObject, FaceTecFaceScanProcessorDelegate, URLSessio
     // Part 10:  This function gets called after the FaceTec SDK is completely done.  There are no parameters because you have already been passed all data in the processSessionWhileFaceTecSDKWaits function and have already handled all of your own results.
     //
     func onFaceTecSDKCompletelyDone() {
-        delegate.onProcessingComplete(isSuccess: isSuccess, facetecSessionResult: latestZoomSessionResult)
+//        delegate.onProcessingComplete(isSuccess: isSuccess, facetecSessionResult: latestZoomSessionResult)
+        
+        delegate.onProcessingComplete(isSuccess: isSuccess, facetecSessionResult: latestZoomSessionResult, externalDatabaseRefID: self.externalDatabaseRefID, xUserAgent: self.xUserAgent)
     }
 }

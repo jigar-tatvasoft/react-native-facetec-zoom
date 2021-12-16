@@ -38,7 +38,7 @@ class ZoomAuth:  RCTViewManager, ProcessingDelegate, URLSessionTaskDelegate {
       var optionsWithKey = options
       optionsWithKey["licenseKey"] = self.licenseKey
       self.getSessionToken() { sessionToken in
-        let _ = LivenessCheckProcessor(sessionToken: sessionToken, delegate: self, fromVC: root, options: optionsWithKey)
+        let _ = EnrollmentProcessor(sessionToken: sessionToken, delegate: self, fromVC: root, options: optionsWithKey)
       }
     }
   }
