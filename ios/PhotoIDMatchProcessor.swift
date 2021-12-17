@@ -143,7 +143,7 @@ class PhotoIDScanProcessor: NSObject, FaceTecFaceScanProcessorDelegate, FaceTecI
             if wasProcessed == true {
 
                 // Demonstrates dynamically setting the Success Screen Message.
-                FaceTecCustomization.setOverrideResultScreenSuccessMessage("Liveness\nConfirmed")
+                FaceTecCustomization.setOverrideResultScreenSuccessMessage("Enrollment\nSucceeded")
                 
                 // In v9.2.0+, simply pass in scanResultBlob to the proceedToNextStep function to advance the User flow.
                 // scanResultBlob is a proprietary, encrypted blob that controls the logic for what happens next for the User.
